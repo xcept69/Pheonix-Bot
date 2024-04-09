@@ -1,0 +1,5 @@
+discord.py
+psutil
+python-dotenv
+black
+asyncio
