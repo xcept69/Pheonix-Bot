@@ -9,10 +9,11 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-"discord.py" = "^2.3.2"
+"discord.py" = {extras = ["voice"], version = "^2.3.2"}
 asyncio = "^3.4.3"
 psutil = "^5.9.8"
 python-dotenv = "^1.0.1"
+wavelink = "^3.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"

@@ -1,8 +1,9 @@
 import discord
 import os
 from discord.ext import commands, tasks
-from src.utils.constants import TOKEN
+from src.utils.constants import TOKEN, WAVELINK_PASS, WAVELINK_URI
 from itertools import cycle
+import wavelink
 
 ts = 0
 tm = 0
@@ -20,6 +21,42 @@ class Pheonix(commands.Bot):
         print("-------------------------")
         status_swap.start()
         uptimeCounter.start()
+    
+    async def setup_hook(self) -> None:
+        nodes = [wavelink.Node(uri=f"{WAVELINK_URI}", password=f"{WAVELINK_PASS}")]
+
+        # cache_capacity is EXPERIMENTAL. Turn it off by passing None
+        await wavelink.Pool.connect(nodes=nodes, client=self, cache_capacity=100)
+
+    async def on_wavelink_node_ready(
+        self, payload: wavelink.NodeReadyEventPayload
+    ) -> None:
+        print(f"Wavelink Node connected: {payload.node!r} | Resumed: {payload.resumed}")
+
+    async def on_wavelink_track_start(
+        self, payload: wavelink.TrackStartEventPayload
+    ) -> None:
+        player: wavelink.Player | None = payload.player
+        if not player:
+            # Handle edge cases...
+            return
+
+        original: wavelink.Playable | None = payload.original
+        track: wavelink.Playable = payload.track
+
+        embed: discord.Embed = discord.Embed(title="Now Playing")
+        embed.description = f"**{track.title}** by `{track.author}`"
+
+        if track.artwork:
+            embed.set_image(url=track.artwork)
+
+        if original and original.recommended:
+            embed.description += f"\n\n`This track was recommended via {track.source}`"
+
+        if track.album.name:
+            embed.add_field(name="Album", value=track.album.name)
+
+        await player.home.send(embed=embed)
 
 
 bot = Pheonix()
