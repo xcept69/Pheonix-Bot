@@ -4,10 +4,9 @@
 Phoenix is a multipurpose discord bot built on discord.py!
 
 
-## Acknowledgements
+# Support Server
 
- - [Aarav, the owner of the porject](https://github.com/DevAarav)
- - [Mannu, the co-owner of the project](https://github.com/MannuVilasara)
+- [Discord Server](https://discord.gg/E46ZfJbPHj)
 
 
 ## Authors
